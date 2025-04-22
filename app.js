@@ -6,10 +6,10 @@ import { PORT } from './config/env.js';
 import userRouter from './routes/user.routes.js';
 import authRouter from './routes/auth.routes.js';
 import subscriptionRouter from './routes/subscription.routes.js';
-import connectToDatabase from './database/mongodb.js'
-import errorMiddleware from './middlewares/error.middleware.js'
-import arcjetMiddleware from './middlewares/arcjet.middleware.js'
-import workflowRouter from './routes/workflow.routes.js'
+import workflowRouter from './routes/workflow.routes.js';
+import connectToDatabase from './database/mongodb.js';
+import errorMiddleware from './middlewares/error.middleware.js';
+import arcjetMiddleware from './middlewares/arcjet.middleware.js';
 
 const app = express();
 
@@ -29,10 +29,13 @@ app.get('/', (req, res) => {
   res.send('Welcome to the Subscription Tracker API!');
 });
 
-app.listen(PORT, async () => {
-  console.log(`Subscription Tracker API is running on http://localhost:${PORT}`);
-
-  await connectToDatabase();
-});
+// This conditional ensures the server only starts when directly running this file
+// and not when imported by other files (like api/index.js)
+if (process.env.NODE_ENV !== 'production') {
+  app.listen(PORT, async () => {
+    console.log(`Subscription Tracker API is running on http://localhost:${PORT}`);
+    await connectToDatabase();
+  });
+}
 
 export default app;
