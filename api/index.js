@@ -38,4 +38,5 @@ app.get('/', (req, res) => {
 // Error handling middleware (should be last)
 app.use(errorMiddleware);
 
+// Export the Express API for Vercel
 export default app;
