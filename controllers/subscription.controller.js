@@ -1,6 +1,5 @@
 import Subscription from '../models/subscription.model.js'
 import { workflowClient } from '../config/upstash.js'
-import { SERVER_URL } from '../config/env.js'
 
 export const createSubscription = async (req, res, next) => {
   try {
@@ -9,8 +8,15 @@ export const createSubscription = async (req, res, next) => {
       user: req.user._id,
     });
 
+    // Get the protocol and host from request headers
+    const protocol = req.headers['x-forwarded-proto'] || 'http';
+    const host = req.headers.host;
+    const serverUrl = `${protocol}://${host}`;
+
+    console.log(serverUrl);
+
     const { workflowRunId } = await workflowClient.trigger({
-      url: `${SERVER_URL}/api/v1/workflows/subscription/reminder`,
+      url: `${serverUrl}/api/v1/workflows/subscription/reminder`,
       body: {
         subscriptionId: subscription.id,
       },
